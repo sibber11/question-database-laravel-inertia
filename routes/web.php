@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SemesterController;
 use Illuminate\Foundation\Application;
@@ -27,6 +28,7 @@ Route::middleware('auth')->group(function () {
 
 Route::resources([
     'semesters' => SemesterController::class,
+    'courses' => CourseController::class
 ]);
 
 require __DIR__.'/auth.php';

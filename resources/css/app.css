@@ -20,7 +20,15 @@
         @apply w-full
     }
 
+    .styled-table th {
+        @apply bg-slate-300 border-slate-600
+    }
+
     .styled-table td, .styled-table th {
         @apply border p-2;
+    }
+
+    .styled-table tr {
+        @apply odd:bg-slate-50 hover:bg-slate-100
     }
 }

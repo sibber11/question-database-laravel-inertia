@@ -1,7 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Head, Link} from '@inertiajs/vue3';
-import DangerButton from "@/Components/DangerButton.vue";
 import Pagination from "@/Components/Pagination.vue";
 
 const props = defineProps({
