@@ -10,7 +10,7 @@ class SelectResource extends JsonResource
     public function toArray(Request $request)
     {
         return [
-            'id' => $this->id,
+            ...parent::toArray($request),
             'label' => $this->name,
         ];
     }

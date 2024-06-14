@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Course extends Model
+class Chapter extends Model
 {
     protected $fillable = [
         'name',
         'semester_id',
+        'course_id',
     ];
 
     public function semester()
@@ -16,8 +17,8 @@ class Course extends Model
         return $this->belongsTo(Semester::class);
     }
 
-    public function chapters()
+    public function course()
     {
-        return $this->hasMany(Chapter::class, 'course_id');
+        return $this->belongsTo(Course::class);
     }
 }

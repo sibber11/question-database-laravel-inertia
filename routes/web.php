@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SemesterController;
@@ -28,7 +29,8 @@ Route::middleware('auth')->group(function () {
 
 Route::resources([
     'semesters' => SemesterController::class,
-    'courses' => CourseController::class
+    'courses' => CourseController::class,
+    'chapters' => ChapterController::class,
 ]);
 
 require __DIR__.'/auth.php';
