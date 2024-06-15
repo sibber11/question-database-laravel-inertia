@@ -14,14 +14,6 @@ const props = defineProps({
     courses: Object
 })
 
-onMounted(function () {
-    if (props.model) {
-        form.name = props.model.name;
-        form.semester_id = props.model.semester_id;
-        form.course_id = props.model.course_id;
-    }
-})
-
 const form = useForm({
     name: '',
     semester_id: null,
@@ -37,8 +29,18 @@ function submit() {
 }
 
 const coursesOfSemester = computed(function () {
-    if (form.semester_id === null) return [];
+    if (form.semester_id === null) return props.courses.data;
     return props.courses.data.filter(item => item.semester_id === form.semester_id)
+})
+
+onMounted(function () {
+    setTimeout(() => {
+        if (props.model) {
+            form.name = props.model.name;
+            form.semester_id = parseInt(props.model.semester_id);
+            form.course_id = parseInt(props.model.course_id);
+        }
+    }, 100)
 })
 
 </script>
@@ -50,7 +52,6 @@ const coursesOfSemester = computed(function () {
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
         </template>
-
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
