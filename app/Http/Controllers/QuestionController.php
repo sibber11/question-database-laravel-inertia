@@ -49,7 +49,9 @@ class QuestionController extends Controller
      */
     public function show(Question $question)
     {
-        //
+        return Inertia::render('Questions/Show', [
+            'model' => $question->load(['semester', 'course', 'chapter', 'topic'])
+        ]);
     }
 
     /**
