@@ -4,6 +4,7 @@ use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\TopicController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -31,6 +32,7 @@ Route::resources([
     'semesters' => SemesterController::class,
     'courses' => CourseController::class,
     'chapters' => ChapterController::class,
+    'topics' => TopicController::class,
 ]);
 
 require __DIR__.'/auth.php';

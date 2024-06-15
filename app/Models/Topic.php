@@ -3,28 +3,29 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Chapter extends Model
+class Topic extends Model
 {
     protected $fillable = [
         'name',
         'semester_id',
         'course_id',
+        'chapter_id',
     ];
 
-    public function semester()
+    public function semester(): BelongsTo
     {
         return $this->belongsTo(Semester::class);
     }
 
-    public function course()
+    public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    public function topics(): HasMany
+    public function chapter(): BelongsTo
     {
-        return $this->hasMany(Topic::class, 'chapter_id');
+        return $this->belongsTo(Chapter::class);
     }
 }
