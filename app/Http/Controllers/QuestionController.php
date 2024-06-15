@@ -6,10 +6,11 @@ use App\Http\Requests\QuestionRequest;
 use App\Http\Resources\SelectResource;
 use App\Models\Chapter;
 use App\Models\Course;
-use App\Models\Semester;
 use App\Models\Question;
+use App\Models\Semester;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class QuestionController extends Controller
 {
@@ -18,8 +19,13 @@ class QuestionController extends Controller
      */
     public function index()
     {
+        $models = QueryBuilder::for(Question::class)
+            ->allowedSorts(['id', 'semester_id', 'course_id','chapter_id', 'topic_id'])
+            ->with('semester', 'course', 'chapter', 'topic')
+            ->paginate()
+            ->withQueryString();
         return Inertia::render('Questions/Index', [
-            'models' => JsonResource::collection(Question::with('semester', 'course', 'chapter', 'topic')->paginate())
+            'models' => JsonResource::collection($models)
         ]);
     }
 

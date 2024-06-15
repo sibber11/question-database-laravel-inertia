@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\GlobalFilter;
 use App\Http\Requests\StoreSemesterRequest;
 use App\Http\Requests\UpdateSemesterRequest;
 use App\Models\Semester;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class SemesterController extends Controller
 {
@@ -15,8 +17,16 @@ class SemesterController extends Controller
      */
     public function index()
     {
+        $filters = new GlobalFilter([
+            'id', 'name'
+        ]);
+        $models = QueryBuilder::for(Semester::class)
+            ->allowedFilters($filters->fields())
+            ->allowedSorts(['id', 'name'])
+            ->paginate()
+            ->withQueryString();
         return Inertia::render('Semesters/Index',[
-            'models' => JsonResource::collection(Semester::paginate())
+            'models' => JsonResource::collection($models)
         ]);
     }
 
