@@ -3,6 +3,7 @@
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\TopicController;
 use Illuminate\Foundation\Application;
@@ -33,6 +34,7 @@ Route::resources([
     'courses' => CourseController::class,
     'chapters' => ChapterController::class,
     'topics' => TopicController::class,
+    'questions' => QuestionController::class,
 ]);
 
 require __DIR__.'/auth.php';

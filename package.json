@@ -16,5 +16,9 @@
         "tailwindcss": "^3.2.1",
         "vite": "^5.0",
         "vue": "^3.4.0"
+    },
+    "dependencies": {
+        "md-editor-v3": "^4.16.9",
+        "vue3-table-lite": "^1.4.0"
     }
 }
