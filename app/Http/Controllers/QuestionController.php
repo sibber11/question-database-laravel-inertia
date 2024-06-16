@@ -24,7 +24,7 @@ class QuestionController extends Controller
         $filters = new GlobalFilter(['title']);
         $models = QueryBuilder::for(Question::class)
             ->allowedFilters([...$filters->fields(), 'semester_id', 'course_id', 'chapter_id', 'topic_id'])
-            ->allowedSorts(['id', 'semester_id', 'course_id','chapter_id', 'topic_id'])
+            ->allowedSorts(['id', 'semester_id', 'course_id', 'chapter_id', 'topic_id'])
             ->with('semester', 'course', 'chapter', 'topic')
             ->paginate()
             ->withQueryString();

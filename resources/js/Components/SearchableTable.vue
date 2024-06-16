@@ -10,33 +10,33 @@ import {usePage} from "@inertiajs/vue3";
 import {computed, useSlots} from "vue";
 
 const props = defineProps({
-    columns: Array,
-    view: Boolean,
+  columns: Array,
+  view: Boolean,
 })
 const models = computed(() => usePage().props.models);
 console.log(useSlots())
 </script>
 
 <template>
-    <AuthenticatedLayout>
-        <div class="flex justify-between items-center">
-            <SearchInput/>
-            <slot></slot>
-        </div>
-        <Vue3TableLite
-            :columns="columns"
-            :rows="models.data"
-            :sortable="sortable()"
-            has-checkbox
-            is-hide-paging is-slot-mode
-            @do-search="performSort">
-            <template #actions="data">
-                <Actions :data="data" :view="view"/>
-            </template>
-            <template v-slot:[slot]="{value}" v-for="(_,slot) in $slots">
-                <slot :name="slot" :value="value" v-if="slot != 'default'"/>
-            </template>
-        </Vue3TableLite>
-        <Pagination :meta="models.meta"/>
-    </AuthenticatedLayout>
+  <AuthenticatedLayout>
+    <div class="flex justify-between items-center">
+      <SearchInput/>
+      <slot></slot>
+    </div>
+    <Vue3TableLite
+      :columns="columns"
+      :rows="models.data"
+      :sortable="sortable()"
+      has-checkbox
+      is-hide-paging is-slot-mode
+      @do-search="performSort">
+      <template #actions="data">
+        <Actions :data="data" :view="view"/>
+      </template>
+      <template v-for="(_,slot) in $slots" v-slot:[slot]="{value}">
+        <slot v-if="slot != 'default'" :name="slot" :value="value"/>
+      </template>
+    </Vue3TableLite>
+    <Pagination :meta="models.meta"/>
+  </AuthenticatedLayout>
 </template>

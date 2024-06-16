@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Chapter extends Model
 {
     use HasFactory;
+
     protected $perPage = 10;
     protected $fillable = [
         'name',

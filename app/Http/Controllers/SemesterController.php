@@ -25,17 +25,9 @@ class SemesterController extends Controller
             ->allowedSorts(['id', 'name'])
             ->paginate()
             ->withQueryString();
-        return Inertia::render('Semesters/Index',[
+        return Inertia::render('Semesters/Index', [
             'models' => JsonResource::collection($models)
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return Inertia::render('Semesters/Fields');
     }
 
     /**
@@ -45,6 +37,14 @@ class SemesterController extends Controller
     {
         Semester::create($request->validated());
         return to_route('semesters.index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return Inertia::render('Semesters/Fields');
     }
 
     /**

@@ -1,6 +1,7 @@
 import qs from "qs";
 import {router} from "@inertiajs/vue3";
 import {ref, watch} from "vue";
+
 // import debounce from 'lodash.debounce';
 
 
@@ -67,15 +68,15 @@ export function useSearchFilter(field = '') {
 
   // Perform the search by field with debounce of 250ms
   const performSearchByField = (reParse = true) => {
-      // If the search field is empty, return
-      if (searchField.value === '') return;
+    // If the search field is empty, return
+    if (searchField.value === '') return;
 
-      // If reParse is true, reparse the query string
-      if (reParse) {
-          query.value = parseQuery();
-      }
+    // If reParse is true, reparse the query string
+    if (reParse) {
+      query.value = parseQuery();
+    }
 
-      getItems(search.value, searchField.value, query);
+    getItems(search.value, searchField.value, query);
   };
 
   // Watch for changes in the search field

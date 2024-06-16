@@ -4,22 +4,22 @@ import {getItems} from "@/Hooks/useFilter.js";
 
 
 export function useSearch() {
-    const searchValue = ref('');
-    const query = ref();
+  const searchValue = ref('');
+  const query = ref();
 
-    onMounted(() => {
-        query.value = parseQuery();
-        searchValue.value = query.q || '';
-    });
+  onMounted(() => {
+    query.value = parseQuery();
+    searchValue.value = query.q || '';
+  });
 
-    const performSearch = () => {
-        query.value = parseQuery();
-        getItems(searchValue.value, 'q', query);
-    };
+  const performSearch = () => {
+    query.value = parseQuery();
+    getItems(searchValue.value, 'q', query);
+  };
 
-    watch(searchValue, performSearch);
+  watch(searchValue, performSearch);
 
-    return searchValue;
+  return searchValue;
 }
 
 export default useSearch;

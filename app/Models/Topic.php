@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Topic extends Model
 {
     use HasFactory;
+
     protected $perPage = 10;
     protected $fillable = [
         'name',

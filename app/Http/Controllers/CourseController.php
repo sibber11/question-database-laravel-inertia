@@ -27,7 +27,7 @@ class CourseController extends Controller
             ->with('semester')
             ->paginate()
             ->withQueryString();
-        return Inertia::render('Courses/Index',[
+        return Inertia::render('Courses/Index', [
             'models' => JsonResource::collection($models)
         ]);
     }

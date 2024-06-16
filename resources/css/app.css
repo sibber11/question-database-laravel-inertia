@@ -3,36 +3,36 @@
 @tailwind utilities;
 
 @layer components {
-    .btn {
-        @apply inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white
-        uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150
-    }
+  .btn {
+    @apply inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white
+    uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150
+  }
 
-    .btn-primary {
-        @apply bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:ring-indigo-500;
-    }
+  .btn-primary {
+    @apply bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:ring-indigo-500;
+  }
 
   .btn-secondary {
     @apply bg-purple-800 hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-900 focus:ring-indigo-500;
   }
 
-    .btn-danger {
-        @apply bg-red-600 hover:bg-red-500 focus:bg-red-500 active:bg-red-700 focus:ring-indigo-500;
-    }
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-500 focus:bg-red-500 active:bg-red-700 focus:ring-indigo-500;
+  }
 
-    .styled-table{
-        @apply w-full
-    }
+  .styled-table {
+    @apply w-full
+  }
 
-    .styled-table th {
-        @apply bg-slate-300 border-slate-600
-    }
+  .styled-table th {
+    @apply bg-slate-300 border-slate-600
+  }
 
-    .styled-table td, .styled-table th {
-        @apply border p-2;
-    }
+  .styled-table td, .styled-table th {
+    @apply border p-2;
+  }
 
-    .styled-table tr {
-        @apply odd:bg-slate-50 hover:bg-slate-100
-    }
+  .styled-table tr {
+    @apply odd:bg-slate-50 hover:bg-slate-100
+  }
 }
