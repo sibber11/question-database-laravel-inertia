@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\GlobalFilter;
 use App\Http\Requests\ChapterRequest;
 use App\Http\Resources\SelectResource;
 use App\Models\Chapter;
@@ -9,6 +10,7 @@ use App\Models\Course;
 use App\Models\Semester;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ChapterController extends Controller
 {
@@ -17,8 +19,17 @@ class ChapterController extends Controller
      */
     public function index()
     {
+        $filters = new GlobalFilter([
+            'id', 'name', 'semester.name', 'course.name'
+        ]);
+        $models = QueryBuilder::for(Chapter::class)
+            ->allowedFilters($filters->fields())
+            ->allowedSorts(['id', 'name'])
+            ->with('semester', 'course')
+            ->paginate()
+            ->withQueryString();
         return Inertia::render('Chapters/Index', [
-            'models' => JsonResource::collection(Chapter::with('semester', 'course')->paginate())
+            'models' => JsonResource::collection($models)
         ]);
     }
 
