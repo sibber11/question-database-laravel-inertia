@@ -10,7 +10,7 @@ const props = defineProps({
 <template>
     <div class="flex gap-4">
         <div v-for="link in meta.links">
-            <Link v-if="link.url" :href="link.url" class="btn btn-primary" v-html="link.label"/>
+            <Link v-if="link.url" :href="link.url" class="btn btn-primary" v-html="link.label" preserve-scroll/>
             <span v-else class="btn btn-primary cursor-not-allowed" v-html="link.label"/>
         </div>
     </div>

@@ -12,6 +12,10 @@
         @apply bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:ring-indigo-500;
     }
 
+  .btn-secondary {
+    @apply bg-purple-800 hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-900 focus:ring-indigo-500;
+  }
+
     .btn-danger {
         @apply bg-red-600 hover:bg-red-500 focus:bg-red-500 active:bg-red-700 focus:ring-indigo-500;
     }

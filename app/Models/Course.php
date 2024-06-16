@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
+    protected $perPage = 10;
     protected $fillable = [
         'name',
         'semester_id',

@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Chapter;
+use App\Models\Question;
+use App\Models\Topic;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,5 +22,13 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+        $this->call([
+            SemesterSeeder::class,
+            CourseSeeder::class,
+        ]);
+
+        Chapter::factory(60)->create();
+        Topic::factory(300)->create();
+        Question::factory(600)->create();
     }
 }

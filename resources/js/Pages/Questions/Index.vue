@@ -2,6 +2,7 @@
 import SearchableTable from "@/Components/SearchableTable.vue";
 import {useSearchFilter} from "@/Hooks/useFilter.js";
 import SelectInput from "@/Components/SelectInput.vue";
+import {Link} from "@inertiajs/vue3";
 
 const columns = [
     {label: 'ID', field: 'id', isKey: true, sortable: true, width: '5%'},
@@ -27,12 +28,15 @@ const {search: searchTopic} = useSearchFilter('topic_id');
 </script>
 
 <template>
-    <SearchableTable :columns="columns">
+  <SearchableTable :columns="columns">
         <div class="grid grid-cols-3">
 <!--            <SelectInput v-model="searchSemester" :options="semesters?.data"/>-->
             <SelectInput v-model="searchCourse" :options="courses?.data"/>
             <SelectInput v-model="searchChapter" :options="chapters?.data"/>
             <SelectInput v-model="searchTopic" :options="topics?.data"/>
         </div>
+    <template v-slot:title="{value}">
+      <Link :href="route('questions.show', value.id)" class="font-bold text-purple-600">{{ value.title }}</Link>
+    </template>
     </SearchableTable>
 </template>
