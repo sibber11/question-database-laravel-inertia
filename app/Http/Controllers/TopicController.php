@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\GlobalFilter;
 use App\Http\Requests\TopicRequest;
 use App\Http\Resources\SelectResource;
 use App\Models\Chapter;
-use App\Models\Topic;
 use App\Models\Course;
 use App\Models\Semester;
+use App\Models\Topic;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TopicController extends Controller
 {
@@ -18,8 +20,17 @@ class TopicController extends Controller
      */
     public function index()
     {
+        $filters = new GlobalFilter([
+            'id', 'name', 'semester.name', 'course.name', 'chapter.name'
+        ]);
+        $models = QueryBuilder::for(Topic::class)
+            ->allowedFilters($filters->fields())
+            ->allowedSorts(['id', 'name'])
+            ->with('semester', 'course', 'chapter')
+            ->paginate()
+            ->withQueryString();
         return Inertia::render('Topics/Index', [
-            'models' => JsonResource::collection(Topic::with('semester', 'course', 'chapter')->paginate())
+            'models' => JsonResource::collection($models)
         ]);
     }
 

@@ -1,10 +1,6 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SearchableTable from "@/Components/SearchableTable.vue";
 
-const props = defineProps({
-    models: Object
-})
 const columns = [
     {label: 'ID', field: 'id', isKey: true, sortable: true, width: '5%'},
     {label: 'Name', field: 'name', sortable: true},
@@ -14,7 +10,5 @@ const columns = [
 </script>
 
 <template>
-    <AuthenticatedLayout>
-        <SearchableTable :columns="columns" :models="models"/>
-    </AuthenticatedLayout>
+    <SearchableTable :columns="columns"/>
 </template>

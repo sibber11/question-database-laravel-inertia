@@ -5,14 +5,17 @@ import Vue3TableLite from "vue3-table-lite";
 import SearchInput from "@/Components/SearchInput.vue";
 import Actions from "@/Components/Actions.vue";
 import Pagination from "@/Components/Pagination.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import {usePage} from "@inertiajs/vue3";
 
 const props = defineProps({
-    models: Object,
     columns: Array,
 })
+const models = usePage().props.models;
 </script>
 
 <template>
+    <AuthenticatedLayout>
     <SearchInput/>
     <Vue3TableLite
         :columns="columns"
@@ -26,4 +29,5 @@ const props = defineProps({
         </template>
     </Vue3TableLite>
     <Pagination :meta="models.meta"/>
+    </AuthenticatedLayout>
 </template>
