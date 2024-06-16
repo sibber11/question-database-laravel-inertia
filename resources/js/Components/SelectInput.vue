@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import {ref} from 'vue';
 
 const model = defineModel({
     required: true,
@@ -7,13 +7,10 @@ const model = defineModel({
 
 const input = ref(null);
 
-onMounted(() => {
-    if (input.value.hasAttribute('autofocus')) {
-        input.value.focus();
-    }
-});
+defineProps({
+    options: [Array, Object]
+})
 
-defineExpose({focus: () => input.value.focus()});
 </script>
 
 <template>
@@ -22,6 +19,12 @@ defineExpose({focus: () => input.value.focus()});
         v-model="model"
         class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
     >
-        <slot></slot>
+        <template v-if="options">
+            <option :value="undefined">Select</option>
+            <option v-for="model in options" :value="model.id">
+                {{ model.label }}
+            </option>
+        </template>
+        <slot v-else></slot>
     </select>
 </template>

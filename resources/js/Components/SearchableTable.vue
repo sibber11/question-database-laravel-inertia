@@ -7,16 +7,20 @@ import Actions from "@/Components/Actions.vue";
 import Pagination from "@/Components/Pagination.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {usePage} from "@inertiajs/vue3";
+import {computed} from "vue";
 
 const props = defineProps({
     columns: Array,
 })
-const models = usePage().props.models;
+const models = computed(()=>usePage().props.models);
 </script>
 
 <template>
     <AuthenticatedLayout>
-    <SearchInput/>
+    <div class="flex justify-between items-center">
+        <SearchInput/>
+        <slot></slot>
+    </div>
     <Vue3TableLite
         :columns="columns"
         :rows="models.data"
