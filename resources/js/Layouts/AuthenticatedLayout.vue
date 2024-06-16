@@ -5,12 +5,15 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import {Link} from '@inertiajs/vue3';
+import {Head, Link} from '@inertiajs/vue3';
+import {currentRoute} from "@/Hooks/helpers.js";
 
 const showingNavigationDropdown = ref(false);
+const pageName = 'Dashboard';
 </script>
 
 <template>
+    <Head :title="pageName"/>
     <div>
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
@@ -152,15 +155,26 @@ const showingNavigationDropdown = ref(false);
             </nav>
 
             <!-- Page Heading -->
-            <header class="bg-white shadow" v-if="$slots.header">
+            <header class="bg-white shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header" />
+                    <div class="flex justify-between items-center">
+                        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{pageName}}</h2>
+                        <Link :href="route(currentRoute('create'))" class="btn btn-primary">Create</Link>
+                    </div>
                 </div>
             </header>
 
             <!-- Page Content -->
             <main>
-                <slot />
+                <div class="py-12">
+                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            <div class="px-6 py-2 text-gray-900">
+                                <slot/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
