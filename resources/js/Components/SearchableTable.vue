@@ -7,7 +7,7 @@ import Actions from "@/Components/Actions.vue";
 import Pagination from "@/Components/Pagination.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {usePage} from "@inertiajs/vue3";
-import {computed, useSlots} from "vue";
+import {computed} from "vue";
 
 const props = defineProps({
   columns: Array,
@@ -18,6 +18,9 @@ const models = computed(() => usePage().props.models);
 
 <template>
   <AuthenticatedLayout create>
+    <template #buttons>
+      <slot v-if="$slots.buttons" name="buttons"/>
+    </template>
     <div class="my-4">
       <Pagination :meta="models.meta"/>
     </div>

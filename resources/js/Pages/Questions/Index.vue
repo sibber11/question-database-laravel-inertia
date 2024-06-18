@@ -34,6 +34,9 @@ const hasAnswers = [
 
 <template>
   <SearchableTable :columns="columns">
+    <template #buttons>
+      <Link :href="route('random-question')" class="btn btn-primary">Random Question</Link>
+    </template>
     <div class="flex justify-end gap-4">
       <!--            <SelectInput v-model="searchSemester" :options="semesters?.data"/>-->
       <SelectInput v-model="hasAnswer" :options="hasAnswers"/>

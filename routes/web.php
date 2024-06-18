@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+Route::get('questions/random', [QuestionController::class, 'random'])->name('random-question');
 Route::resources([
     'semesters' => SemesterController::class,
     'courses' => CourseController::class,

@@ -53,6 +53,9 @@ defineProps({
                 <NavLink :active="route().current('questions.*')" :href="route('questions.index')">
                   Questions
                 </NavLink>
+                <NavLink :active="route().current('random-question')" :href="route('random-question')">
+                  Random Question
+                </NavLink>
               </div>
             </div>
 
@@ -162,11 +165,13 @@ defineProps({
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ pageName }}</h2>
-            <Link v-if="create" :href="route(currentRoute('create'))" class="btn btn-primary">
-              Create
-            </Link>
-            <slot v-else-if="$slots.actions" name="actions"></slot>
-            <Link v-else :href="route(currentRoute('index'))" class="btn btn-primary">Back</Link>
+            <div class="flex gap-4 justify-end items-center">
+              <Link v-if="create" :href="route(currentRoute('create'))" class="btn btn-primary">
+                Create
+              </Link>
+              <slot v-if="$slots.buttons" name="buttons"></slot>
+              <Link v-else :href="route(currentRoute('index'))" class="btn btn-primary">Back</Link>
+            </div>
           </div>
         </div>
       </header>

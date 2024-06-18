@@ -86,6 +86,18 @@ class QuestionController extends Controller
         ]);
     }
 
+    public function random()
+    {
+        $question = Question::query()
+            ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
+            ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
+            ->inRandomOrder()
+            ->first();
+        return Inertia::render('Questions/Show', [
+            'model' => $question->load(['semester', 'course', 'chapter', 'topic'])
+        ]);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

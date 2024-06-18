@@ -1,7 +1,6 @@
 <script setup>
 import {useFilter} from "@/Hooks/useFilter";
 import {ref, watch} from "vue";
-import Checkbox from "@/Components/Checkbox.vue";
 
 
 const props = defineProps({
@@ -24,6 +23,6 @@ watch(model, (value) => {
 <template>
   <label class="flex items-center gap-2">
     <span>Has Due: </span>
-    <Checkbox v-model="model"/>
+    <input v-model="model" type="checkbox"/>
   </label>
 </template>

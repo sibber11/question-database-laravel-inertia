@@ -12,8 +12,9 @@ const props = defineProps({
 
 <template>
   <AuthenticatedLayout>
-    <template #actions>
+    <template #buttons>
       <div class="space-x-4">
+        <Link :href="route('random-question')" class="btn btn-primary">Random Question</Link>
         <Link :href="route(currentRoute('edit'), model.id)" class="btn btn-secondary">Edit</Link>
         <Link :href="route(currentRoute('index'))" class="btn btn-primary">Back</Link>
       </div>
@@ -40,12 +41,12 @@ const props = defineProps({
       <span>{{ model.topic?.name }}</span>
     </div>
 
-    <div v-if="model.description" class="col-span-2 mt-8 p-2 border rounded shadow">
+    <div v-if="model.description" class="col-span-2 mt-4 p-4 border rounded shadow">
       <label class="font-bold">Description: </label>
       <MdPreview :model-value="model.description"/>
     </div>
 
-    <div v-if="model.answer" class="col-span-2 mt-8 p-2 border rounded shadow">
+    <div v-if="model.answer" class="col-span-2 mt-4 p-4 border rounded shadow">
       <label class="font-bold">Answer: </label>
       <MdPreview :model-value="model.answer"/>
     </div>
