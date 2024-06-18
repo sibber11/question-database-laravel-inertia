@@ -41,7 +41,7 @@ const hasAnswers = [
       <SelectInput v-model="searchTopic" :options="topics?.data" placeholder="filter by topic"/>
     </div>
     <template v-slot:title="{value}">
-      <Link :href="route('questions.show', value.id)" class="font-bold text-purple-600">{{ value.title }}</Link>
+      <Link :href="route('questions.show', value.id)" class="font-bold text-slate-700">{{ value.title }}</Link>
     </template>
   </SearchableTable>
 </template>

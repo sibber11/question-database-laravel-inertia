@@ -18,6 +18,9 @@ const models = computed(() => usePage().props.models);
 
 <template>
   <AuthenticatedLayout create>
+    <div class="my-4">
+      <Pagination :meta="models.meta"/>
+    </div>
     <div class="flex justify-between items-center">
       <SearchInput/>
       <slot></slot>
