@@ -14,7 +14,6 @@ const props = defineProps({
   view: Boolean,
 })
 const models = computed(() => usePage().props.models);
-console.log(useSlots())
 </script>
 
 <template>

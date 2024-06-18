@@ -10,6 +10,7 @@ use App\Models\Course;
 use App\Models\Question;
 use App\Models\Semester;
 use App\Models\Topic;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -21,19 +22,25 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        $filters = new GlobalFilter(['title']);
+        $filters = new GlobalFilter(['title', 'description']);
         $models = QueryBuilder::for(Question::class)
-            ->allowedFilters([...$filters->fields(), 'semester_id', 'course_id', 'chapter_id', 'topic_id'])
+            ->allowedFilters([...$filters->fields(), 'chapter_id', 'topic_id'])
             ->allowedSorts(['id', 'semester_id', 'course_id', 'chapter_id', 'topic_id'])
+            ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
+            ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
             ->with('semester', 'course', 'chapter', 'topic')
             ->paginate()
             ->withQueryString();
         return Inertia::render('Questions/Index', [
             'models' => JsonResource::collection($models),
-            'semesters' => SelectResource::collection(Semester::all()),
-            'courses' => SelectResource::collection(Course::all()),
-            'chapters' => SelectResource::collection(Chapter::all()),
-            'topics' => SelectResource::collection(Topic::all()),
+            'chapters' => SelectResource::collection(Chapter::query()
+                ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
+                ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))->get()),
+            'topics' => SelectResource::collection(Topic::query()
+                ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
+                ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
+                ->when(request('filter.chapter_id'), fn(Builder $query, $value) => $query->where('chapter_id', $value))
+                ->get()),
         ]);
     }
 

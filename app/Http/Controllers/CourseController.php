@@ -23,7 +23,7 @@ class CourseController extends Controller
         ]);
         $models = QueryBuilder::for(Course::class)
             ->allowedFilters($filters->fields())
-            ->allowedSorts(['id', 'name'])
+            ->allowedSorts(['id', 'name', 'semester_id'])
             ->with('semester')
             ->paginate()
             ->withQueryString();

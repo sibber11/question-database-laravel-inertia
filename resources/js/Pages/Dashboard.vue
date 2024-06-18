@@ -1,21 +1,64 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import {Head} from '@inertiajs/vue3';
+import {Head, useForm} from '@inertiajs/vue3';
+import SelectInput from "@/Components/SelectInput.vue";
+import {onMounted, watch} from "vue";
+
+const props = defineProps({
+  semesters: Object,
+  courses: Object,
+  semester_id: [String, Number],
+  course_id: [String, Number],
+  statistics: Object
+})
+
+onMounted(() => {
+
+})
+
+const form = useForm({
+  semester_id: props.semester_id,
+  course_id: props.course_id,
+})
+watch([() => form.semester_id, () => form.course_id], () => {
+  form.post(route('session.change-semester-course'));
+})
 </script>
 
 <template>
   <Head title="Dashboard"/>
 
   <AuthenticatedLayout>
-    <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
-    </template>
-
-    <div class="py-12">
-      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-          <div class="p-6 text-gray-900">You're logged in!</div>
-        </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex gap-4 justify-between items-center">
+        <label>Please Select Semester</label>
+        <SelectInput v-model="form.semester_id" :options="semesters?.data"/>
+      </div>
+      <div class="flex gap-4 justify-between items-center">
+        <label>Please Select Course</label>
+        <SelectInput v-model="form.course_id" :options="courses?.data"/>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4 my-4">
+      <div class="p-4 border rounded flex justify-between items-center text-xl">
+        <label class="block">Total Questions</label>
+        <div>{{statistics.total_questions}}</div>
+      </div>
+      <div class="p-4 border rounded flex justify-between items-center text-xl">
+        <label class="block">Questions Explored</label>
+        <div>{{statistics.total_questions}}</div>
+      </div>
+      <div class="p-4 border rounded flex justify-between items-center text-xl">
+        <label class="block">Questions Remaining</label>
+        <div>{{statistics.total_questions}}</div>
+      </div>
+      <div class="p-4 border rounded flex justify-between items-center text-xl">
+        <label class="block">Questions with Answers</label>
+        <div>{{statistics.answered_questions}}</div>
+      </div>
+      <div class="p-4 border rounded flex justify-between items-center text-xl">
+        <label class="block">Questions without Answers</label>
+        <div>{{statistics.un_answered_questions}}</div>
       </div>
     </div>
   </AuthenticatedLayout>

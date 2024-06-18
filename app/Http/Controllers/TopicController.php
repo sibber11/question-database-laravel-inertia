@@ -25,7 +25,7 @@ class TopicController extends Controller
         ]);
         $models = QueryBuilder::for(Topic::class)
             ->allowedFilters($filters->fields())
-            ->allowedSorts(['id', 'name'])
+            ->allowedSorts(['id', 'name', 'semester_id', 'course_id', 'chapter_id'])
             ->with('semester', 'course', 'chapter')
             ->paginate()
             ->withQueryString();

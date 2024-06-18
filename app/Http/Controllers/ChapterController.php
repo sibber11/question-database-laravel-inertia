@@ -24,7 +24,7 @@ class ChapterController extends Controller
         ]);
         $models = QueryBuilder::for(Chapter::class)
             ->allowedFilters($filters->fields())
-            ->allowedSorts(['id', 'name'])
+            ->allowedSorts(['id', 'name', 'semester_id', 'course_id'])
             ->with('semester', 'course')
             ->paginate()
             ->withQueryString();

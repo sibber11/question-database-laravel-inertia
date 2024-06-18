@@ -116,3 +116,21 @@ export function performStatusFilter(search, searchField) {
 
   getItems(search, searchField, query);
 }
+
+/**
+ * Custom hook for handling search filter functionality.
+ * @param {string} filterField - The search field.
+ * @returns {Object} An object containing the search value and search field.
+ */
+export function useFilter(filterField) {
+  function performFilter(filterValue) {
+    const query = ref(parseQuery());
+    if (query.value.filter !== undefined) {
+      delete query.value.filter[filterField];
+    }
+
+    getItems(filterValue.value, filterField, query);
+  }
+
+  return {performFilter}
+}

@@ -8,7 +8,11 @@ const model = defineModel({
 const input = ref(null);
 
 defineProps({
-  options: [Array, Object]
+  options: [Array, Object],
+  placeholder: {
+    type: String,
+    default: 'Select option'
+  }
 })
 
 </script>
@@ -17,10 +21,10 @@ defineProps({
   <select
     ref="input"
     v-model="model"
-    class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+    class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm min-w-60"
   >
     <template v-if="options">
-      <option :value="undefined">Select</option>
+      <option value="">{{placeholder}}</option>
       <option v-for="model in options" :value="model.id">
         {{ model.label }}
       </option>
