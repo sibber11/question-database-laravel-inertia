@@ -13,6 +13,7 @@ use App\Models\Topic;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class QuestionController extends Controller
@@ -24,7 +25,17 @@ class QuestionController extends Controller
     {
         $filters = new GlobalFilter(['title', 'description']);
         $models = QueryBuilder::for(Question::class)
-            ->allowedFilters([...$filters->fields(), 'chapter_id', 'topic_id'])
+            ->allowedFilters([...$filters->fields(),
+                'chapter_id',
+                'topic_id',
+                AllowedFilter::callback('has_answer', function ($query, $value){
+                    if ($value){
+                        $query->whereNotNull('answer');
+                    }else{
+                        $query->whereNull('answer');
+                    }
+                })
+            ])
             ->allowedSorts(['id', 'semester_id', 'course_id', 'chapter_id', 'topic_id'])
             ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
             ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
