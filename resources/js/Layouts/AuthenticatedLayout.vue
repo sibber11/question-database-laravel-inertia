@@ -10,6 +10,9 @@ import {currentRoute} from "@/Hooks/helpers.js";
 
 const showingNavigationDropdown = ref(false);
 const pageName = 'Dashboard';
+defineProps({
+  create: Boolean
+})
 </script>
 
 <template>
@@ -159,7 +162,11 @@ const pageName = 'Dashboard';
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ pageName }}</h2>
-            <Link :href="route(currentRoute('create'))" class="btn btn-primary">Create</Link>
+            <Link v-if="create" :href="route(currentRoute('create'))" class="btn btn-primary">
+              Create
+            </Link>
+            <slot v-else-if="$slots.actions" name="actions"></slot>
+            <Link v-else :href="route(currentRoute('index'))" class="btn btn-primary">Back</Link>
           </div>
         </div>
       </header>

@@ -2,6 +2,8 @@
 
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {MdPreview} from "md-editor-v3";
+import {currentRoute} from "@/Hooks/helpers.js";
+import {Link} from "@inertiajs/vue3";
 
 const props = defineProps({
   model: Object,
@@ -10,6 +12,12 @@ const props = defineProps({
 
 <template>
   <AuthenticatedLayout>
+    <template #actions>
+      <div class="space-x-4">
+        <Link :href="route(currentRoute('edit'), model.id)" class="btn btn-secondary">Edit</Link>
+        <Link :href="route(currentRoute('index'))" class="btn btn-primary">Back</Link>
+      </div>
+    </template>
     <div class="col-span-2 text-lg">
       <label class="font-bold">Title: </label>
       <span>{{ model.title }}</span>
@@ -32,12 +40,12 @@ const props = defineProps({
       <span>{{ model.topic?.name }}</span>
     </div>
 
-    <div v-if="model.description" class="col-span-2 mt-8">
+    <div v-if="model.description" class="col-span-2 mt-8 p-2 border rounded shadow">
       <label class="font-bold">Description: </label>
       <MdPreview :model-value="model.description"/>
     </div>
 
-    <div v-if="model.answer" class="col-span-2 mt-8">
+    <div v-if="model.answer" class="col-span-2 mt-8 p-2 border rounded shadow">
       <label class="font-bold">Answer: </label>
       <MdPreview :model-value="model.answer"/>
     </div>

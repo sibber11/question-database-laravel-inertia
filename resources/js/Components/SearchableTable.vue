@@ -17,7 +17,7 @@ const models = computed(() => usePage().props.models);
 </script>
 
 <template>
-  <AuthenticatedLayout>
+  <AuthenticatedLayout create>
     <div class="flex justify-between items-center">
       <SearchInput/>
       <slot></slot>
