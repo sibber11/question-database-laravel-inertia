@@ -8,22 +8,26 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {computed, onMounted} from "vue";
 import SelectInput from "@/Components/SelectInput.vue";
 import {MdEditor} from 'md-editor-v3';
-import 'md-editor-v3/lib/style.css';
+import Vue3TagsInput from 'vue3-tags-input';
 
 const props = defineProps({
   model: Object,
   semesters: Object,
   courses: Object,
   chapters: Object,
+  semester_id: [String, Number],
+  course_id: [String, Number],
+  tags: Object,
 })
 
 const form = useForm({
   title: '',
-  semester_id: null,
-  course_id: null,
+  semester_id: props.semester_id,
+  course_id: props.course_id,
   chapter_id: null,
   description: '',
-  answer: ''
+  answer: '',
+  tags: '',
 })
 
 function submit() {
@@ -52,8 +56,9 @@ onMounted(function () {
       form.course_id = props.model.course_id;
       form.chapter_id = props.model.chapter_id;
       form.topic_id = props.model.topic_id;
-      form.description = props.model.description;
-      form.answer = props.model.answer;
+      form.description = props.model.description ?? '';
+      form.answer = props.model.answer ?? '';
+      form.tags = props.tags;
     }
   }, 100)
 })
@@ -132,9 +137,23 @@ onMounted(function () {
       </div>
 
       <div>
+        <InputLabel for="tags" value="Tags"/>
+
+        <div>
+          <Vue3TagsInput
+            id="tags"
+            @on-tags-changed="t => form.tags = t"
+            :tags="tags"
+          />
+        </div>
+
+        <InputError :message="form.errors.tags" class="mt-2 mb-2"/>
+      </div>
+
+      <div>
         <InputLabel for="chapter_id" value="Description"/>
 
-        <MdEditor v-model="form.description" :preview="false" language="en-US"/>
+        <MdEditor v-model="form.description" :preview="false" language="en-US" noUploadImg />
 
         <InputError :message="form.errors.description" class="mt-2"/>
       </div>
@@ -142,7 +161,7 @@ onMounted(function () {
       <div>
         <InputLabel class="mb-2" for="answer" value="Answer"/>
 
-        <MdEditor v-model="form.answer" :preview="false" language="en-US"/>
+        <MdEditor noUploadImg v-model="form.answer" :preview="false" language="en-US"/>
 
         <InputError :message="form.errors.answer" class="mt-2"/>
       </div>

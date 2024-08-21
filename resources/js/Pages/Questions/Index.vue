@@ -10,6 +10,7 @@ const columns = [
   {label: 'Semester', field:'semester_id', sortable: true, display: row => row.semester?.name ?? '-'},
   {label: 'Course', field:'course_id', sortable: true, display: row => row.course?.name ?? '-'},
   {label: 'Chapter', field:'chapter_id', sortable: true, display: row => row.chapter?.name ?? '-'},
+  {label: 'Tags', field:'tags', sortable: false},
   {label: 'Actions', field: 'actions', width: '10%'},
 ];
 
@@ -45,6 +46,13 @@ const hasAnswers = [
     </div>
     <template v-slot:title="{value}">
       <Link :href="route('questions.show', value.id)" class="font-bold text-slate-700">{{ value.title }}</Link>
+    </template>
+    <template v-slot:tags="{value}">
+      <div class="flex gap-2 flex-wrap">
+        <template v-for="tag in value.tags">
+              <span class="py-1 px-2 bg-gray-200 rounded">{{ tag.name.en }}</span>
+            </template>
+        </div>
     </template>
   </SearchableTable>
 </template>

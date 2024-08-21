@@ -1,4 +1,5 @@
 import './bootstrap';
+import 'md-editor-v3/lib/style.css';
 import '../css/app.css';
 
 import {createApp, h} from 'vue';

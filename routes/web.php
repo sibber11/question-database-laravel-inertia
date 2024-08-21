@@ -27,15 +27,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('questions/random', [QuestionController::class, 'random'])->name('random-question');
+    Route::resources([
+        'semesters' => SemesterController::class,
+        'courses' => CourseController::class,
+        'chapters' => ChapterController::class,
+        'topics' => TopicController::class,
+        'questions' => QuestionController::class,
+    ]);
 });
-Route::get('questions/random', [QuestionController::class, 'random'])->name('random-question');
-Route::resources([
-    'semesters' => SemesterController::class,
-    'courses' => CourseController::class,
-    'chapters' => ChapterController::class,
-    'topics' => TopicController::class,
-    'questions' => QuestionController::class,
-]);
+
 
 Route::post('change-semester', [SessionController::class, 'changeSemesterCourse'])->name('session.change-semester-course');
 

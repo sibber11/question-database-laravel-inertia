@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "md-editor-v3": "^4.16.9",
-        "vue3-table-lite": "^1.4.0"
+        "vue3-table-lite": "^1.4.0",
+        "vue3-tags-input": "^1.0.12"
     }
 }

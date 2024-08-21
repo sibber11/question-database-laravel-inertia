@@ -15,6 +15,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\Tags\Tag;
 
 class QuestionController extends Controller
 {
@@ -34,12 +35,20 @@ class QuestionController extends Controller
                     }else{
                         $query->whereNull('answer');
                     }
+                }),
+                AllowedFilter::callback('q', function($query, $value){
+                    $query->whereAny(['title', 'description'], 'like', "%$value%")
+                    ->orWhereHas('tags', function($query) use ($value){
+                        $query->where('name', 'like', "%$value%");
+                    });
                 })
+
             ])
             ->allowedSorts(['id', 'semester_id', 'course_id', 'chapter_id', 'topic_id'])
             ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
             ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
-            ->with('semester', 'course', 'chapter', 'topic')
+            ->with('semester', 'course', 'chapter', 'topic', 'tags:id,name')
+            ->defaultSort('-id')
             ->paginate()
             ->withQueryString();
         return Inertia::render('Questions/Index', [
@@ -60,7 +69,12 @@ class QuestionController extends Controller
      */
     public function store(QuestionRequest $request)
     {
-        Question::create($request->validated());
+        $question = Question::create($request->validated());
+
+        if ($request->filled('tags')) {
+            $question->syncTags($request->input('tags'));
+        }
+
         return to_route('questions.index');
     }
 
@@ -73,6 +87,9 @@ class QuestionController extends Controller
             'semesters' => SelectResource::collection(Semester::all()),
             'courses' => SelectResource::collection(Course::all()),
             'chapters' => SelectResource::collection(Chapter::all()),
+            'semester_id' => session('semester_id'),
+            'course_id' => session('course_id'),
+            // 'allTags' => Tag::pluck('name'),
         ]);
     }
 
@@ -82,7 +99,7 @@ class QuestionController extends Controller
     public function show(Question $question)
     {
         return Inertia::render('Questions/Show', [
-            'model' => $question->load(['semester', 'course', 'chapter', 'topic'])
+            'model' => $question->load(['semester', 'course', 'chapter', 'topic', 'tags'])
         ]);
     }
 
@@ -93,8 +110,13 @@ class QuestionController extends Controller
             ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
             ->inRandomOrder()
             ->first();
+
+            if (empty($question)) {
+                return back()->with('status', 'Question not found!');
+            }
+
         return Inertia::render('Questions/Show', [
-            'model' => $question->load(['semester', 'course', 'chapter', 'topic'])
+            'model' => $question?->load(['semester', 'course', 'chapter', 'topic'])
         ]);
     }
 
@@ -103,11 +125,14 @@ class QuestionController extends Controller
      */
     public function edit(Question $question)
     {
+
         return Inertia::render('Questions/Fields', [
             'model' => $question,
             'semesters' => SelectResource::collection(Semester::all()),
             'courses' => SelectResource::collection(Course::all()),
             'chapters' => SelectResource::collection(Chapter::all()),
+            'tags' => $question->tags->pluck('name'),
+            // 'allTags' => Tag::pluck('name'),
         ]);
     }
 
@@ -118,6 +143,11 @@ class QuestionController extends Controller
     {
         $question->fill($request->validated());
         $question->save();
+
+        if ($request->filled('tags')) {
+            $question->syncTags($request->input('tags'));
+        }
+
         return to_route('questions.index');
     }
 

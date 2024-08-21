@@ -16,6 +16,7 @@ class QuestionRequest extends FormRequest
             'course_id' => ['nullable'],
             'chapter_id' => ['nullable'],
             'topic_id' => ['nullable'],
+            'tags' => ['nullable', 'array'],
         ];
     }
 }

@@ -25,6 +25,7 @@ class ChapterController extends Controller
         $models = QueryBuilder::for(Chapter::class)
             ->allowedFilters($filters->fields())
             ->allowedSorts(['id', 'name', 'semester_id', 'course_id'])
+            ->defaultSort('-id')
             ->with('semester', 'course')
             ->paginate()
             ->withQueryString();
@@ -50,6 +51,8 @@ class ChapterController extends Controller
         return Inertia::render('Chapters/Fields', [
             'semesters' => SelectResource::collection(Semester::all()),
             'courses' => SelectResource::collection(Course::all()),
+            'semester_id' => session('semester_id'),
+            'course_id' => session('course_id'),
         ]);
     }
 

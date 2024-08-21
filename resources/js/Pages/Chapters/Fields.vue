@@ -11,13 +11,15 @@ import SelectInput from "@/Components/SelectInput.vue";
 const props = defineProps({
   model: Object,
   semesters: Object,
-  courses: Object
+  courses: Object,
+  semester_id: [String, Number],
+  course_id: [String, Number],
 })
 
 const form = useForm({
   name: '',
-  semester_id: null,
-  course_id: null,
+  semester_id: props.semester_id,
+  course_id: props.course_id,
 })
 
 function submit() {
