@@ -7,6 +7,8 @@ import {Link} from "@inertiajs/vue3";
 
 const props = defineProps({
   model: Object,
+  next: [String, Number],
+  prev: [String, Number],
 });
 </script>
 
@@ -14,17 +16,23 @@ const props = defineProps({
   <AuthenticatedLayout>
     <template #buttons>
       <div class="space-x-4">
-        <Link :href="route('random-question')" class="btn btn-primary">Random Question</Link>
+        <Link v-if="prev" :href="route(currentRoute('show'), prev)" class="btn btn-primary">Previous</Link>
         <Link :href="route(currentRoute('edit'), model.id)" class="btn btn-secondary">Edit</Link>
         <Link :href="route(currentRoute('index'))" class="btn btn-primary">Back</Link>
+        <Link v-if="next" :href="route(currentRoute('show'), next)" class="btn btn-primary">Next</Link>
       </div>
-    </template>
+      </template>
+      <div class="space-y-2">
+        <div class=" text-lg">
+          <label class="font-bold">Title: </label>
+          <span>{{ model.title }}</span>
+        </div>
 
-    <div class="space-y-2">
-      <div class="col-span-2 text-lg">
-        <label class="font-bold">Title: </label>
-        <span>{{ model.title }}</span>
+      <div v-if="model.description" class="-mx-4">
+        <!-- <label class="font-bold">Description: </label> -->
+        <MdPreview :model-value="model.description" language="en-US"/>
       </div>
+
       <div>
         <label class="font-bold">Semester: </label>
         <span>{{ model.semester.name }}</span>
@@ -52,11 +60,6 @@ const props = defineProps({
           </template>
         </span>
       </div>
-    </div>
-
-    <div v-if="model.description" class="col-span-2 mt-4 rounded">
-      <label class="font-bold">Description: </label>
-      <MdPreview :model-value="model.description"/>
     </div>
 
     <div v-if="model.answer" class="col-span-2 mt-4 p-4 border rounded shadow">

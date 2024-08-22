@@ -8,9 +8,9 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="flex gap-4">
+  <div class="flex gap-2">
     <div v-for="link in meta.links">
-      <Link v-if="link.url" :href="link.url" class="btn btn-primary" :class="{active: link.active}" preserve-scroll v-html="link.label"/>
+      <Link v-if="link.url" :href="link.url" class="btn btn-primary px-2" :class="{active: link.active}" preserve-scroll v-html="link.label"/>
       <span v-else class="btn cursor-not-allowed text-black border rounded bg-slate-300" v-html="link.label"/>
     </div>
   </div>

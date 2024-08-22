@@ -18,13 +18,14 @@ const props = defineProps({
   semester_id: [String, Number],
   course_id: [String, Number],
   tags: Object,
+  chapter_id: [String, Number],
 })
 
 const form = useForm({
   title: '',
   semester_id: props.semester_id,
   course_id: props.course_id,
-  chapter_id: null,
+  chapter_id: props.chapter_id,
   description: '',
   answer: '',
   tags: '',
@@ -34,7 +35,14 @@ function submit() {
   if (props.model) {
     form.patch(route('questions.update', props.model))
   } else {
-    form.post(route('questions.store'))
+    form.post(route('questions.store'),{
+      onSuccess: ()=>{
+        form.title = '';
+        form.description = '';
+        form.answer = '';
+        form.tags = '';
+      }
+    })
   }
 }
 
@@ -70,7 +78,19 @@ onMounted(function () {
   <Head title="Dashboard"/>
 
   <AuthenticatedLayout>
-    <form class="mt-6 space-y-6" @submit.prevent="submit">
+    <form class="space-y-6" @submit.prevent="submit">
+      <div class="flex items-center gap-4">
+        <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+
+        <Transition
+          enter-active-class="transition ease-in-out"
+          enter-from-class="opacity-0"
+          leave-active-class="transition ease-in-out"
+          leave-to-class="opacity-0"
+        >
+          <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
+        </Transition>
+      </div>
       <div>
         <InputLabel for="title" value="Title"/>
 

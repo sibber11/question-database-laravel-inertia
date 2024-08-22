@@ -75,7 +75,7 @@ class QuestionController extends Controller
             $question->syncTags($request->input('tags'));
         }
 
-        return to_route('questions.index');
+        return to_route('questions.create')->with('chapter_id', $request->input('chapter_id'));
     }
 
     /**
@@ -89,6 +89,7 @@ class QuestionController extends Controller
             'chapters' => SelectResource::collection(Chapter::all()),
             'semester_id' => session('semester_id'),
             'course_id' => session('course_id'),
+            'chapter_id' => session('chapter_id'),
             // 'allTags' => Tag::pluck('name'),
         ]);
     }
@@ -99,7 +100,9 @@ class QuestionController extends Controller
     public function show(Question $question)
     {
         return Inertia::render('Questions/Show', [
-            'model' => $question->load(['semester', 'course', 'chapter', 'topic', 'tags'])
+            'model' => $question->load(['semester', 'course', 'chapter', 'topic', 'tags']),
+            'next' => Question::where('id', '>', $question->id)->value('id'),
+            'prev' => Question::where('id', '<', $question->id)->latest('id')->value('id'),
         ]);
     }
 
@@ -116,7 +119,7 @@ class QuestionController extends Controller
             }
 
         return Inertia::render('Questions/Show', [
-            'model' => $question?->load(['semester', 'course', 'chapter', 'topic'])
+            'model' => $question?->load(['semester', 'course', 'chapter', 'topic', 'tags'])
         ]);
     }
 
@@ -148,7 +151,7 @@ class QuestionController extends Controller
             $question->syncTags($request->input('tags'));
         }
 
-        return to_route('questions.index');
+        return to_route('questions.show', $question);
     }
 
     /**
