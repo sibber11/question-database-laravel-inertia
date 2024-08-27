@@ -24,7 +24,7 @@ const props = defineProps({
 // const {search: searchSemester} = useSearchFilter('semester_id');
 const {search: hasAnswer} = useSearchFilter('has_answer');
 const {search: searchChapter} = useSearchFilter('chapter_id');
-const {search: searchTopic} = useSearchFilter('topic_id');
+//const {search: searchTopic} = useSearchFilter('topic_id');
 
 const hasAnswers = [
   {label: 'Has Answer', id: true},
@@ -42,7 +42,7 @@ const hasAnswers = [
       <!--            <SelectInput v-model="searchSemester" :options="semesters?.data"/>-->
       <SelectInput v-model="hasAnswer" :options="hasAnswers"/>
       <SelectInput v-model="searchChapter" :options="chapters?.data" placeholder="filter by chapter"/>
-      <SelectInput v-model="searchTopic" :options="topics?.data" placeholder="filter by topic"/>
+      <!-- <SelectInput v-model="searchTopic" :options="topics?.data" placeholder="filter by topic"/> -->
     </div>
     <template v-slot:title="{value}">
       <Link :href="route('questions.show', value.id)" class="font-bold text-slate-700">{{ value.title }}</Link>
