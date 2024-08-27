@@ -27,8 +27,7 @@ class QuestionController extends Controller
         $filters = new GlobalFilter(['title', 'description']);
         $models = QueryBuilder::for(Question::class)
             ->allowedFilters([...$filters->fields(),
-                'chapter_id',
-                'topic_id',
+                AllowedFilter::exact('chapter_id'),
                 AllowedFilter::callback('has_answer', function ($query, $value){
                     if ($value){
                         $query->whereNotNull('answer');
