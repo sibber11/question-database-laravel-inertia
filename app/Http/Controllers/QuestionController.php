@@ -9,13 +9,11 @@ use App\Models\Chapter;
 use App\Models\Course;
 use App\Models\Question;
 use App\Models\Semester;
-use App\Models\Topic;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\Tags\Tag;
 
 class QuestionController extends Controller
 {
@@ -36,30 +34,28 @@ class QuestionController extends Controller
                     }
                 }),
                 AllowedFilter::callback('q', function($query, $value){
-                    $query->whereAny(['title', 'description'], 'like', "%$value%")
-                    ->orWhereHas('tags', function($query) use ($value){
-                        $query->where('name', 'like', "%$value%");
+                    $query->where(function ($query) use ($value) {
+                        $query->whereAny(['title', 'description'], 'like', "%$value%")
+                            ->orWhereHas('tags', function ($query) use ($value) {
+                                $query->where('name', 'like', "%$value%");
+                            });
                     });
                 })
-
             ])
             ->allowedSorts(['id', 'semester_id', 'course_id', 'chapter_id', 'topic_id'])
             ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
             ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
+            ->when(session('chapter_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
             ->with('semester', 'course', 'chapter', 'topic', 'tags:id,name')
             ->defaultSort('-id')
             ->paginate()
             ->withQueryString();
+
         return Inertia::render('Questions/Index', [
             'models' => JsonResource::collection($models),
             'chapters' => SelectResource::collection(Chapter::query()
                 ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
                 ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))->get()),
-            'topics' => SelectResource::collection(Topic::query()
-                ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
-                ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
-                ->when(request('filter.chapter_id'), fn(Builder $query, $value) => $query->where('chapter_id', $value))
-                ->get()),
         ]);
     }
 
@@ -98,10 +94,28 @@ class QuestionController extends Controller
      */
     public function show(Question $question)
     {
+        $next = Question::where('id', '>', $question->id)
+            ->where('chapter_id', $question->chapter_id)
+            ->value('id');
+        if (empty($next)) {
+            $next = Question::where('id', '>', $question->id)
+                ->where('chapter_id', $question->chapter_id + 1)
+                ->value('id');
+        }
+
+        $prev = Question::where('id', '<', $question->id)->latest('id')
+            ->where('chapter_id', $question->chapter_id)
+            ->value('id');
+
+        if (empty($prev)) {
+            $prev = Question::where('id', '<', $question->id)->latest('id')
+                ->where('chapter_id', $question->chapter_id - 1)
+                ->value('id');
+        }
         return Inertia::render('Questions/Show', [
             'model' => $question->load(['semester', 'course', 'chapter', 'topic', 'tags']),
-            'next' => Question::where('id', '>', $question->id)->value('id'),
-            'prev' => Question::where('id', '<', $question->id)->latest('id')->value('id'),
+            'next' => $next,
+            'prev' => $prev,
         ]);
     }
 
@@ -110,6 +124,7 @@ class QuestionController extends Controller
         $question = Question::query()
             ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
             ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
+            ->when(session('chapter_id'), fn(Builder $query, $value) => $query->where('chapter_id', $value))
             ->inRandomOrder()
             ->first();
 

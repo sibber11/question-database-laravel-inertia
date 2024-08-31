@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\SelectResource;
+use App\Models\Chapter;
 use App\Models\Course;
 use App\Models\Question;
 use App\Models\Semester;
@@ -16,8 +17,10 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard', [
             'semesters' => SelectResource::collection(Semester::all()),
             'courses' => SelectResource::collection(Course::when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))->get()),
+            'chapters' => SelectResource::collection(Chapter::when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))->get()),
             'semester_id' => session('semester_id'),
             'course_id' => session('course_id'),
+            'chapter_id' => session('course_id'),
             'statistics' => [
                 'total_questions' => Question::count(),
                 'answered_questions' => Question::whereNotNull('answer')->count(),

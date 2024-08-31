@@ -47,9 +47,6 @@ defineProps({
                 <NavLink :active="route().current('chapters.*')" :href="route('chapters.index')">
                   Chapters
                 </NavLink>
-                <NavLink :active="route().current('topics.*')" :href="route('topics.index')">
-                  Topics
-                </NavLink>
                 <NavLink :active="route().current('questions.*')" :href="route('questions.index')">
                   Questions
                 </NavLink>
@@ -88,6 +85,7 @@ defineProps({
                   </template>
 
                   <template #content>
+
                     <DropdownLink :href="route('profile.edit')"> Profile</DropdownLink>
                     <DropdownLink :href="route('logout')" as="button" method="post">
                       Log Out
@@ -138,6 +136,21 @@ defineProps({
           <div class="pt-2 pb-3 space-y-1">
             <ResponsiveNavLink :active="route().current('dashboard')" :href="route('dashboard')">
               Dashboard
+            </ResponsiveNavLink>
+            <ResponsiveNavLink :active="route().current('semesters.*')" :href="route('semesters.index')">
+              Semesters
+            </ResponsiveNavLink>
+            <ResponsiveNavLink :active="route().current('courses.*')" :href="route('courses.index')">
+              Courses
+            </ResponsiveNavLink>
+            <ResponsiveNavLink :active="route().current('chapters.*')" :href="route('chapters.index')">
+              Chapters
+            </ResponsiveNavLink>
+            <ResponsiveNavLink :active="route().current('questions.*')" :href="route('questions.index')">
+              Questions
+            </ResponsiveNavLink>
+            <ResponsiveNavLink :active="route().current('random-question')" :href="route('random-question')">
+              Random Question
             </ResponsiveNavLink>
           </div>
 

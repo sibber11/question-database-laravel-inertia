@@ -18,7 +18,6 @@ const props = defineProps({
   semesters: Object,
   courses: Object,
   chapters: Object,
-  topics: Object,
 });
 
 // const {search: searchSemester} = useSearchFilter('semester_id');

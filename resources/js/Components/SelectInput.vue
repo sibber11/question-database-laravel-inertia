@@ -21,7 +21,7 @@ defineProps({
   <select
     ref="input"
     v-model="model"
-    class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm min-w-60"
+    class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-60"
   >
     <template v-if="options">
       <option value="">{{placeholder}}</option>
