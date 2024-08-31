@@ -3,22 +3,84 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {MdPreview} from "md-editor-v3";
 import {currentRoute} from "@/Hooks/helpers.js";
-import {Link} from "@inertiajs/vue3";
+import {Link, router} from "@inertiajs/vue3";
+import {onMounted, onUnmounted} from "vue";
 
 const props = defineProps({
   model: Object,
   next: [String, Number],
   prev: [String, Number],
 });
+
+let startx;
+let starty;
+
+const touchListener = function (event) {
+  if (event.touches.length === 1) {
+    //just one finger touched
+    startx = event.touches.item(0).clientX;
+    starty = event.touches.item(0).clientY;
+  } else {
+    //a second finger hit the screen, abort the touch
+    startx = null;
+  }
+};
+
+const touchEndListener = function (event) {
+  let offset = 100;//at least 100px are a swipe
+  if (startx) {
+    //the only finger that hit the screen left it
+    let endx = event.changedTouches.item(0).clientX;
+
+    if (endx > startx + offset) {
+      //a left -> right swipe
+      if (props.prev)
+        router.get(route('questions.show', props.prev))
+    }
+    if (endx < startx - offset) {
+      //a right -> left swipe
+      if (props.next)
+        router.get(route('questions.show', props.next))
+    }
+  }
+  // if (starty) {
+  //
+  //   let endy = event.changedTouches.item(0).clientY;
+  //
+  //   if (endy > starty + offset) {
+  //     //a top -> bottom swipe
+  //     console.log('s')
+  //     if (props.prev)
+  //       router.get(route('questions.show', props.prev))
+  //   }
+  //   if (endy < starty - offset) {
+  //     //a bottom -> top swipe
+  //     if (props.next)
+  //       router.get(route('questions.show', props.next))
+  //   }
+  // }
+}
+
+onMounted(() => {
+  window.addEventListener("touchstart", touchListener);
+  window.addEventListener("touchend", touchEndListener);
+})
+
+onUnmounted(() => {
+  window.removeEventListener("touchstart", touchListener);
+  window.removeEventListener("touchend", touchEndListener);
+})
+
 </script>
 
 <template>
   <AuthenticatedLayout>
     <template #buttons>
-      <div class="space-x-4">
+      <div class="flex flex-wrap gap-4 ml-4 justify-end">
         <Link v-if="prev" :href="route(currentRoute('show'), prev)" class="btn btn-primary">Previous</Link>
-        <Link :href="route(currentRoute('edit'), model.id)" class="btn btn-secondary">Edit</Link>
-        <Link :href="route(currentRoute('index'))" class="btn btn-primary">Back</Link>
+        <Link :href="route('questions.edit', model.id)" class="btn btn-secondary">Edit</Link>
+        <Link v-if="!prev && !next" :href="route('random-question')" class="btn bg-green-600">Random</Link>
+<!--        <Link :href="route(currentRoute('index'))" class="btn btn-primary">Back</Link>-->
         <Link v-if="next" :href="route(currentRoute('show'), next)" class="btn btn-primary">Next</Link>
       </div>
       </template>

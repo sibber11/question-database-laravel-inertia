@@ -5,7 +5,7 @@ const columns = [
   {label: 'ID', field: 'id', isKey: true, sortable: true, width: '5%'},
   {label: 'Name', field: 'name', sortable: true},
   {label: 'Semester', field: 'semester_id', sortable: true, display: row => row.semester.name},
-  {label: 'Actions', field: 'actions', width: '10%'},
+  {label: 'Actions', field: 'actions', width: '12%'},
 ];
 
 </script>
