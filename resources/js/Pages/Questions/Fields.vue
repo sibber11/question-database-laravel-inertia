@@ -105,59 +105,61 @@ onMounted(function () {
         <InputError :message="form.errors.title" class="mt-2"/>
       </div>
 
-      <div>
-        <InputLabel for="semester_id" value="Semester"/>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <InputLabel for="semester_id" value="Semester"/>
 
-        <SelectInput
-          id="semester_id"
-          v-model="form.semester_id"
-          class="mt-1 block w-full"
-          required
-        >
-          <option v-for="model in semesters.data" :value="model.id">
-            {{ model.label }}
-          </option>
-        </SelectInput>
+          <SelectInput
+            id="semester_id"
+            v-model="form.semester_id"
+            class="mt-1 block w-full"
+            required
+          >
+            <option v-for="model in semesters.data" :value="model.id">
+              {{ model.label }}
+            </option>
+          </SelectInput>
 
-        <InputError :message="form.errors.semester_id" class="mt-2"/>
+          <InputError :message="form.errors.semester_id" class="mt-2"/>
+        </div>
+
+        <div>
+          <InputLabel for="course_id" value="Course"/>
+
+          <SelectInput
+            id="course_id"
+            v-model="form.course_id"
+            class="mt-1 block w-full"
+            required
+          >
+            <option v-for="model in coursesOfSemester" :value="model.id">
+              {{ model.label }}
+            </option>
+          </SelectInput>
+
+          <InputError :message="form.errors.course_id" class="mt-2"/>
+        </div>
+
+        <div>
+          <InputLabel for="chapter_id" value="Chapter"/>
+
+          <SelectInput
+            id="chapter_id"
+            v-model="form.chapter_id"
+            class="mt-1 block w-full"
+            required
+          >
+            <option v-for="model in chapterOfCourse" :value="model.id">
+              {{ model.label }}
+            </option>
+          </SelectInput>
+
+          <InputError :message="form.errors.chapter_id" class="mt-2"/>
+        </div>
       </div>
 
       <div>
-        <InputLabel for="course_id" value="Course"/>
-
-        <SelectInput
-          id="course_id"
-          v-model="form.course_id"
-          class="mt-1 block w-full"
-          required
-        >
-          <option v-for="model in coursesOfSemester" :value="model.id">
-            {{ model.label }}
-          </option>
-        </SelectInput>
-
-        <InputError :message="form.errors.course_id" class="mt-2"/>
-      </div>
-
-      <div>
-        <InputLabel for="chapter_id" value="Chapter"/>
-
-        <SelectInput
-          id="chapter_id"
-          v-model="form.chapter_id"
-          class="mt-1 block w-full"
-          required
-        >
-          <option v-for="model in chapterOfCourse" :value="model.id">
-            {{ model.label }}
-          </option>
-        </SelectInput>
-
-        <InputError :message="form.errors.chapter_id" class="mt-2"/>
-      </div>
-
-      <div>
-        <InputLabel for="tags" value="Tags"/>
+        <InputLabel class="mb-2" for="tags" value="Tags"/>
 
         <div>
           <Vue3TagsInput
@@ -171,9 +173,14 @@ onMounted(function () {
       </div>
 
       <div>
-        <InputLabel for="chapter_id" value="Description"/>
+        <InputLabel class="mb-2" for="chapter_id" value="Description"/>
 
-        <MdEditor v-model="form.description" :preview="false" language="en-US" noUploadImg />
+        <MdEditor
+          class="h-auto"
+          v-model="form.description"
+          :preview="false"
+          language="en-US"
+          noUploadImg/>
 
         <InputError :message="form.errors.description" class="mt-2"/>
       </div>
@@ -181,7 +188,7 @@ onMounted(function () {
       <div>
         <InputLabel class="mb-2" for="answer" value="Answer"/>
 
-        <MdEditor noUploadImg v-model="form.answer" :preview="false" language="en-US"/>
+        <MdEditor class="h-auto" noUploadImg v-model="form.answer" :preview="false" language="en-US"/>
 
         <InputError :message="form.errors.answer" class="mt-2"/>
       </div>

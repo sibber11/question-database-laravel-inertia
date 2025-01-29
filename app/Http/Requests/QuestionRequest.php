@@ -9,7 +9,7 @@ class QuestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required'],
+            'title' => ['nullable'],
             'description' => ['nullable'],
             'answer' => ['nullable'],
             'semester_id' => ['nullable'],

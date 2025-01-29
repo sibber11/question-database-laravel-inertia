@@ -3,8 +3,10 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {MdPreview} from "md-editor-v3";
 import {currentRoute} from "@/Hooks/helpers.js";
-import {Link, router} from "@inertiajs/vue3";
-import {onMounted, onUnmounted} from "vue";
+import {Link, router, useForm} from "@inertiajs/vue3";
+import {computed, onMounted, onUnmounted, ref} from "vue";
+import {Ollama} from 'ollama/browser'
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
   model: Object,
@@ -62,6 +64,7 @@ const touchEndListener = function (event) {
 }
 
 onMounted(() => {
+  console.log('123')
   window.addEventListener("touchstart", touchListener);
   window.addEventListener("touchend", touchEndListener);
 })
@@ -71,6 +74,45 @@ onUnmounted(() => {
   window.removeEventListener("touchend", touchEndListener);
 })
 
+async function getAnswer() {
+  const ollama = new Ollama({host: import.meta.env.VITE_OLLAMA_HOST});
+  form.answer = '';
+  const content = `Answer the question based on the subject below. Keep the answer short and concise. Start with definition. Highlight key points. Use examples. Use table/diagrams if possible. Respond "Unsure about answer" if not sure about the answer.
+Course/Chapter: ${props.model.course?.name} - ${props.model.chapter?.name}
+Question: ${props.model.title} ${props.model.description ?? ''}
+Answer:`
+  const message = {role: 'user', content}
+  const response = await ollama.chat({model: import.meta.env.VITE_OLLAMA_MODEL, messages: [message], stream: true})
+  for await (const part of response) {
+    form.answer += part.message.content;
+  }
+}
+
+const form = useForm({
+  answer: props.model.answer,
+  random: props.model.id,
+})
+
+const isMessageVisible = ref(false);
+
+function saveAnswer() {
+  form.patch(route('questions.update', props.model), {
+    onSuccess: () => {
+      isMessageVisible.value = true;
+      form.answer = props.model.answer;
+      setTimeout(() => {
+        isMessageVisible.value = false;
+      }, 3000)
+    }
+  })
+}
+const viewThink = ref(false);
+
+function toggleThink() {
+  viewThink.value = !viewThink.value;
+}
+
+const canGenerateAnswer = import.meta.env.VITE_OLLAMA_HOST && import.meta.env.VITE_OLLAMA_MODEL;
 </script>
 
 <template>
@@ -82,9 +124,23 @@ onUnmounted(() => {
         <Link v-if="!prev && !next" :href="route('random-question')" class="btn bg-green-600">Random</Link>
 <!--        <Link :href="route(currentRoute('index'))" class="btn btn-primary">Back</Link>-->
         <Link v-if="next" :href="route(currentRoute('show'), next)" class="btn btn-primary">Next</Link>
+        <template v-if="canGenerateAnswer">
+          <PrimaryButton @click="getAnswer">Quick Answer</PrimaryButton>
+          <PrimaryButton @click="saveAnswer">Save Answer</PrimaryButton>
+        </template>
+
+
       </div>
       </template>
-      <div class="space-y-2">
+
+    <!--  show the saved question message  -->
+    <div
+      v-if="isMessageVisible"
+      class="w-full p-2 bg-green-500 text-white rounded shadow mb-4">
+      The question has been saved successfully.
+    </div>
+
+    <div class="space-y-2">
         <div class=" text-lg">
           <label class="font-bold">Title: </label>
           <span>{{ model.title }}</span>
@@ -124,13 +180,26 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <div v-if="model.answer" class="col-span-2 mt-4 p-4 border rounded shadow">
+    <div v-if="form.answer" class="col-span-2 mt-4">
       <label class="font-bold">Answer: </label>
-      <MdPreview :model-value="model.answer"/>
+      <hr class="mt-2">
+      <MdPreview :model-value="form.answer"/>
+      <hr>
+    </div>
+    <div v-if="model.think" class="my-4">
+      <div class="flex justify-between">
+        <label class="font-bold">Thinking Process: </label>
+        <button @click="toggleThink" class="btn btn-secondary">View</button>
+      </div>
+
+      <div v-if="viewThink" class="font-mono text-justify my-4" v-html="model.think">
+      </div>
     </div>
   </AuthenticatedLayout>
 </template>
 
-<style scoped>
-
+<style>
+.md-editor-preview-wrapper {
+  padding: 0;
+}
 </style>

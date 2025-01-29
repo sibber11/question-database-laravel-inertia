@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Filters\GlobalFilter;
 use App\Http\Requests\QuestionRequest;
+use App\Http\Resources\QuestionResource;
 use App\Http\Resources\SelectResource;
 use App\Models\Chapter;
 use App\Models\Course;
@@ -26,14 +27,14 @@ class QuestionController extends Controller
         $models = QueryBuilder::for(Question::class)
             ->allowedFilters([...$filters->fields(),
                 AllowedFilter::exact('chapter_id'),
-                AllowedFilter::callback('has_answer', function ($query, $value){
-                    if ($value){
+                AllowedFilter::callback('has_answer', function ($query, $value) {
+                    if ($value) {
                         $query->whereNotNull('answer');
-                    }else{
+                    } else {
                         $query->whereNull('answer');
                     }
                 }),
-                AllowedFilter::callback('q', function($query, $value){
+                AllowedFilter::callback('q', function ($query, $value) {
                     $query->where(function ($query) use ($value) {
                         $query->whereAny(['title', 'description'], 'like', "%$value%")
                             ->orWhereHas('tags', function ($query) use ($value) {
@@ -113,7 +114,7 @@ class QuestionController extends Controller
                 ->value('id');
         }
         return Inertia::render('Questions/Show', [
-            'model' => $question->load(['semester', 'course', 'chapter', 'topic', 'tags']),
+            'model' => QuestionResource::make($question->load(['semester', 'course', 'chapter', 'topic', 'tags'])),
             'next' => $next,
             'prev' => $prev,
         ]);
@@ -121,19 +122,24 @@ class QuestionController extends Controller
 
     public function random()
     {
-        $question = Question::query()
-            ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
-            ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
-            ->when(session('chapter_id'), fn(Builder $query, $value) => $query->where('chapter_id', $value))
-            ->inRandomOrder()
-            ->first();
+        if (session()->has('random')) {
+            $question = Question::find(session('random'));
+        } else {
+            $question = Question::query()
+                ->when(session('semester_id'), fn(Builder $query, $value) => $query->where('semester_id', $value))
+                ->when(session('course_id'), fn(Builder $query, $value) => $query->where('course_id', $value))
+                ->when(session('chapter_id'), fn(Builder $query, $value) => $query->where('chapter_id', $value))
+                ->inRandomOrder()
+                ->first();
+        }
 
-            if (empty($question)) {
-                return back()->with('status', 'Question not found!');
-            }
+
+        if (empty($question)) {
+            return back()->with('status', 'Question not found!');
+        }
 
         return Inertia::render('Questions/Show', [
-            'model' => $question?->load(['semester', 'course', 'chapter', 'topic', 'tags'])
+            'model' => QuestionResource::make($question?->load(['semester', 'course', 'chapter', 'topic', 'tags']))
         ]);
     }
 
@@ -158,11 +164,21 @@ class QuestionController extends Controller
      */
     public function update(QuestionRequest $request, Question $question)
     {
-        $question->fill($request->validated());
+        //get fields that are not null
+
+        $values = array_filter($request->validated(), fn($value) => $value !== null);
+
+        $question->fill($values);
         $question->save();
 
         if ($request->filled('tags')) {
             $question->syncTags($request->input('tags'));
+        }
+
+        // if the request was send from the show page redirect back to the show page
+
+        if ($request->has('random')) {
+            return back()->with('random', $question->id);
         }
 
         return to_route('questions.show', $question);
