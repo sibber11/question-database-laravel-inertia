@@ -4,7 +4,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {MdPreview} from "md-editor-v3";
 import {currentRoute} from "@/Hooks/helpers.js";
 import {Link, router, useForm} from "@inertiajs/vue3";
-import {computed, onMounted, onUnmounted, ref} from "vue";
+import { onMounted, onUnmounted, ref} from "vue";
 import {Ollama} from 'ollama/browser'
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
