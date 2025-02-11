@@ -1,0 +1,42 @@
+name: Deploy to Staging Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Verify known_hosts
+        run: |
+          cat ~/.ssh/known_hosts
+
+      - name: Deploy to Backend Server
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST '
+            cd /home/blinkerb/study.blinkerboy.me &&
+            sudo git stash &&
+            sudo git pull origin main &&
+            php artisan migrate &&
+            php artisan optimize:clear &&
+            npm run build
+          '
