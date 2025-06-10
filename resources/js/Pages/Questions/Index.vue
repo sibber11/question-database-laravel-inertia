@@ -3,6 +3,7 @@ import SearchableTable from "@/Components/SearchableTable.vue";
 import {useSearchFilter} from "@/Hooks/useFilter.js";
 import SelectInput from "@/Components/SelectInput.vue";
 import {Link} from "@inertiajs/vue3";
+import {currentRoute} from "@/Hooks/helpers.js";
 
 const columns = [
   {label: 'ID', field: 'id', isKey: true, sortable: true, width: '5%'},
@@ -32,6 +33,9 @@ const hasAnswers = [
 <template>
   <SearchableTable :columns="columns">
     <template #buttons>
+      <Link :href="route(currentRoute('create-multiple'))" class="btn btn-primary">
+        Create Multiple
+      </Link>
       <Link :href="route('random-question')" class="btn btn-primary">Random Question</Link>
     </template>
     <div class="flex flex-wrap justify-end gap-4">

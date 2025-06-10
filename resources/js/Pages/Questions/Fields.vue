@@ -19,6 +19,7 @@ const props = defineProps({
   course_id: [String, Number],
   tags: Object,
   chapter_id: [String, Number],
+  createMultiple: Boolean
 })
 
 const form = useForm({
@@ -26,9 +27,11 @@ const form = useForm({
   semester_id: props.semester_id,
   course_id: props.course_id,
   chapter_id: props.chapter_id,
+  questions: '',
   description: '',
   answer: '',
   tags: '',
+  create_multiple: props.createMultiple
 })
 
 function submit() {
@@ -70,8 +73,6 @@ onMounted(function () {
     }
   }, 100)
 })
-
-
 </script>
 
 <template>
@@ -80,7 +81,7 @@ onMounted(function () {
   <AuthenticatedLayout>
     <form class="space-y-6" @submit.prevent="submit">
       <div class="flex items-center gap-4">
-        <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+<!--        <PrimaryButton :disabled="form.processing">Save</PrimaryButton>-->
 
         <Transition
           enter-active-class="transition ease-in-out"
@@ -91,7 +92,7 @@ onMounted(function () {
           <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
         </Transition>
       </div>
-      <div>
+      <div v-if="!createMultiple">
         <InputLabel for="title" value="Title"/>
 
         <TextInput
@@ -132,8 +133,8 @@ onMounted(function () {
             class="mt-1 block w-full"
             required
           >
-            <option v-for="model in coursesOfSemester" :value="model.id">
-              {{ model.label }}
+            <option v-for="course in coursesOfSemester" :value="course.id">
+              {{ course.label }}
             </option>
           </SelectInput>
 
@@ -149,49 +150,68 @@ onMounted(function () {
             class="mt-1 block w-full"
             required
           >
-            <option v-for="model in chapterOfCourse" :value="model.id">
-              {{ model.label }}
+            <option value="" disabled selected>Select Chapter</option>
+            <option v-for="chapter in chapterOfCourse" :value="chapter.id">
+              {{ chapter.label }}
             </option>
           </SelectInput>
 
           <InputError :message="form.errors.chapter_id" class="mt-2"/>
         </div>
       </div>
+      <template v-if="createMultiple">
+        <div class="col-span-3">
+          <InputLabel class="mb-2" for="questions" value="Questions"/>
 
-      <div>
-        <InputLabel class="mb-2" for="tags" value="Tags"/>
+          <textarea
+            rows="20"
+            class="h-auto p-2 rounded w-full"
+            v-model="form.questions"
+            placeholder="Enter questions separated by ---"
+          >
+          </textarea>
 
+          <InputError :message="form.errors.questions" class="mt-2"/>
+        </div>
+      </template>
+      <template v-else>
         <div>
-          <Vue3TagsInput
-            id="tags"
-            @on-tags-changed="t => form.tags = t"
-            :tags="tags"
-          />
+          <InputLabel class="mb-2" for="tags" value="Tags"/>
+
+          <div>
+            <Vue3TagsInput
+              id="tags"
+              @on-tags-changed="t => form.tags = t"
+              :tags="tags"
+            />
+          </div>
+
+          <InputError :message="form.errors.tags" class="mt-2 mb-2"/>
         </div>
 
-        <InputError :message="form.errors.tags" class="mt-2 mb-2"/>
-      </div>
+        <div>
+          <InputLabel class="mb-2" for="chapter_id" value="Description"/>
 
-      <div>
-        <InputLabel class="mb-2" for="chapter_id" value="Description"/>
+          <MdEditor
+            class="h-auto"
+            v-model="form.description"
+            :preview="false"
+            language="en-US"
+            noUploadImg/>
 
-        <MdEditor
-          class="h-auto"
-          v-model="form.description"
-          :preview="false"
-          language="en-US"
-          noUploadImg/>
+          <InputError :message="form.errors.description" class="mt-2"/>
+        </div>
 
-        <InputError :message="form.errors.description" class="mt-2"/>
-      </div>
+        <div>
+          <InputLabel class="mb-2" for="answer" value="Answer"/>
 
-      <div>
-        <InputLabel class="mb-2" for="answer" value="Answer"/>
+          <MdEditor class="h-auto" noUploadImg v-model="form.answer" :preview="false" language="en-US"/>
 
-        <MdEditor class="h-auto" noUploadImg v-model="form.answer" :preview="false" language="en-US"/>
+          <InputError :message="form.errors.answer" class="mt-2"/>
+        </div>
+      </template>
 
-        <InputError :message="form.errors.answer" class="mt-2"/>
-      </div>
+
 
 
       <div class="flex items-center gap-4">

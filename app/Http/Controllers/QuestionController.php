@@ -12,6 +12,7 @@ use App\Models\Question;
 use App\Models\Semester;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Arr;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -65,13 +66,30 @@ class QuestionController extends Controller
      */
     public function store(QuestionRequest $request)
     {
-        $question = Question::create($request->validated());
+        if ($request->boolean('create_multiple')) {
+            $questions = explode('---', $request->questions);
+            $questions = Arr::map($questions, function ($question) {
+                return trim($question);
+            });
+            $questionsModels = collect();
+            foreach ($questions as $questionTitle) {
+                $questionsModels->push(Question::make($request->only([
+                        'semester_id',
+                        'course_id',
+                        'chapter_id',
+                        'topic_id',
+                    ]) + ['title' => $questionTitle]));
+            }
+            Question::insert($questionsModels->toArray());
+        } else {
+            $question = Question::create($request->validated());
 
-        if ($request->filled('tags')) {
-            $question->syncTags($request->input('tags'));
+            if ($request->filled('tags')) {
+                $question->syncTags($request->input('tags'));
+            }
         }
 
-        return to_route('questions.create')->with('chapter_id', $request->input('chapter_id'));
+        return back()->with('chapter_id', $request->input('chapter_id'));
     }
 
     /**
@@ -86,7 +104,19 @@ class QuestionController extends Controller
             'semester_id' => session('semester_id'),
             'course_id' => session('course_id'),
             'chapter_id' => session('chapter_id'),
-            // 'allTags' => Tag::pluck('name'),
+        ]);
+    }
+
+    public function createMultiple()
+    {
+        return Inertia::render('Questions/Fields', [
+            'semesters' => SelectResource::collection(Semester::all()),
+            'courses' => SelectResource::collection(Course::all()),
+            'chapters' => SelectResource::collection(Chapter::all()),
+            'semester_id' => session('semester_id'),
+            'course_id' => session('course_id'),
+            'chapter_id' => session('chapter_id'),
+            'createMultiple' => true,
         ]);
     }
 
